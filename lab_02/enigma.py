@@ -33,14 +33,16 @@ class Enigma:
 
   def encode(self, inputPath):
     inputFile = open(inputPath, 'rb')
-    outputFile = open('encoded__' + inputPath, 'wb')
+    if inputPath.startswith('encoded__'): outputPath = 'decoded__' + inputPath[9:]
+    else: outputPath = 'encoded__' + inputPath
+    outputFile = open(outputPath, 'wb')
     while 1:
       byte = inputFile.read(1)
       if byte == b"":
         break
       char: int = int.from_bytes(byte, byteorder="big", signed=False)
       charEncoded = self.__encodeChar(char)
-      print(char, '->', charEncoded)
+      # print(char, '->', charEncoded)
       outputFile.write(charEncoded.to_bytes(1, byteorder='big', signed=False))
 
     inputFile.close()
@@ -70,3 +72,12 @@ class Enigma:
   
 enigma = Enigma()
 enigma.encode('data.txt')
+enigma.encode('data.png')
+enigma.encode('data.pdf')
+enigma.encode('data.zip')
+
+enigma = Enigma()
+enigma.encode('encoded__data.txt')
+enigma.encode('encoded__data.png')
+enigma.encode('encoded__data.pdf')
+enigma.encode('encoded__data.zip')
