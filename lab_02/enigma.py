@@ -10,11 +10,11 @@ class Rotor:
   def rotate(self):
     self.curr = (self.curr + 1) % len(self.key)
     
-  def getCharByIndex(self, index: int):
+  def getByteByIndex(self, index: int):
     return self.key[(self.curr + index) % len(self.key)]
   
-  def getIndexByChar(self, char: array):
-    return (- self.curr + self.key.index(char)) % len(self.key)
+  def getIndexByByte(self, byte: array):
+    return (- self.curr + self.key.index(byte)) % len(self.key)
     
 class Reflector:
   def __init__(self, key: array):
@@ -31,44 +31,62 @@ class Enigma:
     
     self.reflector: Reflector = Reflector(settings['reflector']['key'])
 
-  def encode(self, inputPath):
-    inputFile = open(inputPath, 'rb')
-    if inputPath.startswith('encoded__'): outputPath = 'decoded__' + inputPath[9:]
-    else: outputPath = 'encoded__' + inputPath
-    outputFile = open(outputPath, 'wb')
+  def __readByteArray(self, filePath):
+    file = open(filePath, 'rb')
+    byteArray = []
     while 1:
-      byte = inputFile.read(1)
+      byte = file.read(1)
       if byte == b"":
         break
-      char: int = int.from_bytes(byte, byteorder="big", signed=False)
-      charEncoded = self.__encodeChar(char)
-      # print(char, '->', charEncoded)
-      outputFile.write(charEncoded.to_bytes(1, byteorder='big', signed=False))
+      byteArray.append(int.from_bytes(byte, byteorder="big", signed=False))
+    file.close()
+    return byteArray
+    
+  def __writeByteArray(self, filePath, array):
+    file = open(filePath, 'wb')
+    for byte in array:
+      file.write(byte.to_bytes(1, byteorder='big', signed=False))
+    file.close()
 
-    inputFile.close()
-    outputFile.close()
+  def encode(self, inputPath):
+    outputPath = 'encoded__' + inputPath
+    
+    byteArray = self.__readByteArray(inputPath)
+    encodedByteArray = self.__Enigma(byteArray)
+    self.__writeByteArray(outputPath, encodedByteArray)
   
-  def __encodeChar(self, char):
-    #  прямой ход
-    char = self.rotor1.getCharByIndex(char)
-    char = self.rotor2.getCharByIndex(char)
-    char = self.rotor3.getCharByIndex(char)
+  def decode(self, inputPath):
+    outputPath = 'decoded__' + inputPath[9:]
     
-    char = self.reflector.key[char]
-    
-    # обратный ход
-    char = self.rotor3.getIndexByChar(char)
-    char = self.rotor2.getIndexByChar(char)
-    char = self.rotor1.getIndexByChar(char)
+    byteArray = self.__readByteArray(inputPath)
+    decodedByteArray = self.__Enigma(byteArray)
+    self.__writeByteArray(outputPath, decodedByteArray)
+  
+  def __Enigma(self, data):
+    result = []
+    for byte in data:
+      #  прямой ход
+      byte = self.rotor1.getByteByIndex(byte)
+      byte = self.rotor2.getByteByIndex(byte)
+      byte = self.rotor3.getByteByIndex(byte)
+      
+      byte = self.reflector.key[byte]
+      
+      # обратный ход
+      byte = self.rotor3.getIndexByByte(byte)
+      byte = self.rotor2.getIndexByByte(byte)
+      byte = self.rotor1.getIndexByByte(byte)
 
-    # проворачиваем роторы
-    self.rotor3.rotate()
-    if (self.rotor3.curr == self.rotor3.start):
-      self.rotor2.rotate()
-      if (self.rotor2.curr == self.rotor2.start):
-        self.rotor1.rotate()
+      # проворачиваем роторы
+      self.rotor3.rotate()
+      if (self.rotor3.curr == self.rotor3.start):
+        self.rotor2.rotate()
+        if (self.rotor2.curr == self.rotor2.start):
+          self.rotor1.rotate()
+      
+      result.append(byte)
 
-    return char
+    return result
   
 enigma = Enigma()
 enigma.encode('data.txt')
@@ -77,7 +95,7 @@ enigma.encode('data.pdf')
 enigma.encode('data.zip')
 
 enigma = Enigma()
-enigma.encode('encoded__data.txt')
-enigma.encode('encoded__data.png')
-enigma.encode('encoded__data.pdf')
-enigma.encode('encoded__data.zip')
+enigma.decode('encoded__data.txt')
+enigma.decode('encoded__data.png')
+enigma.decode('encoded__data.pdf')
+enigma.decode('encoded__data.zip')
