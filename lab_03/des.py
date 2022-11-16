@@ -100,9 +100,7 @@ class DES:
         column = int(''.join([str(x) for x in block[1:-1]]), 2)
 
         sboxValue = self.sboxes[i][row][column]
-
         binVal = self.__binValue(sboxValue, 4)
-
         result += [int(bit) for bit in binVal]
     return result
   
@@ -138,57 +136,50 @@ class DES:
     finalResult = self.__bitArrayToByteArray(result)
     return finalResult
 
-  def encode(self, inputPath):
-    inputFile = open(inputPath, 'rb')
-    outputPath = 'encoded__' + inputPath
-    outputFile = open(outputPath, 'wb')
-    
+  def __readByteArray(self, filePath):
+    file = open(filePath, 'rb')
     byteArray = []
     while 1:
-      byte = inputFile.read(1)
+      byte = file.read(1)
       if byte == b"":
         break
       byteArray.append(int.from_bytes(byte, byteorder="big", signed=False))
+    file.close()
+    return byteArray
     
+  def __writeByteArray(self, filePath, array):
+    file = open(filePath, 'wb')
+    for byte in array:
+      file.write(byte.to_bytes(1, byteorder='big', signed=False))
+    file.close()
+  
+  def encode(self, inputPath):
+    outputPath = 'encoded__' + inputPath
+    
+    byteArray = self.__readByteArray(inputPath)
     byteArray = self.__addPadding(byteArray)
-      
     encodedByteArray = self.__DES(byteArray, ENCODE)
     
-    for byte in encodedByteArray:
-      outputFile.write(byte.to_bytes(1, byteorder='big', signed=False))
+    self.__writeByteArray(outputPath, encodedByteArray)
     
-    inputFile.close()
-    outputFile.close()
   
   def decode(self, inputPath):
-    inputFile = open(inputPath, 'rb')
     outputPath = 'decoded__' + inputPath[9:]
-    outputFile = open(outputPath, 'wb')
-    
-    byteArray = []
-    while 1:
-      byte = inputFile.read(1)
-      if byte == b"":
-        break
-      byteArray.append(int.from_bytes(byte, byteorder="big", signed=False))
-    
+
+    byteArray = self.__readByteArray(inputPath)
     decodedByteArray = self.__DES(byteArray, DECODE)
-    
     decodedByteArray = self.__removePadding(decodedByteArray)
     
-    for byte in decodedByteArray:
-      outputFile.write(byte.to_bytes(1, byteorder='big', signed=False))
-    
-    inputFile.close()
-    outputFile.close()
+    self.__writeByteArray(outputPath, decodedByteArray)
+
 
 des = DES()
-# des.encode('data.txt')
-# des.encode('data.png')
-# des.encode('data.pdf')
+des.encode('data.txt')
+des.encode('data.png')
+des.encode('data.pdf')
 des.encode('data.zip')
 
-# des.decode('encoded__data.txt')
-# des.decode('encoded__data.png')
-# des.decode('encoded__data.pdf')
+des.decode('encoded__data.txt')
+des.decode('encoded__data.png')
+des.decode('encoded__data.pdf')
 des.decode('encoded__data.zip')
