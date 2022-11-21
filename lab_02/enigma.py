@@ -1,6 +1,8 @@
 from array import array
 import json
 
+DATA_FOLDER = '../data/'
+
 class Rotor:
   def __init__(self, key: array, start: array):
     self.key: array = key
@@ -51,16 +53,16 @@ class Enigma:
   def encode(self, inputPath):
     outputPath = 'encoded__' + inputPath
     
-    byteArray = self.__readByteArray(inputPath)
+    byteArray = self.__readByteArray(DATA_FOLDER + inputPath)
     encodedByteArray = self.__Enigma(byteArray)
-    self.__writeByteArray(outputPath, encodedByteArray)
+    self.__writeByteArray(DATA_FOLDER + outputPath, encodedByteArray)
   
   def decode(self, inputPath):
     outputPath = 'decoded__' + inputPath[9:]
     
-    byteArray = self.__readByteArray(inputPath)
+    byteArray = self.__readByteArray(DATA_FOLDER + inputPath)
     decodedByteArray = self.__Enigma(byteArray)
-    self.__writeByteArray(outputPath, decodedByteArray)
+    self.__writeByteArray(DATA_FOLDER + outputPath, decodedByteArray)
   
   def __Enigma(self, data):
     result = []

@@ -3,6 +3,8 @@ import json
 ENCODE = 0
 DECODE = 1
 
+DATA_FOLDER = '../data/'
+
 class DES:
   def __init__(self):
     file = open('settings.json', 'r')
@@ -155,21 +157,21 @@ class DES:
   def encode(self, inputPath):
     outputPath = 'encoded__' + inputPath
     
-    byteArray = self.__readByteArray(inputPath)
+    byteArray = self.__readByteArray(DATA_FOLDER + inputPath)
     byteArray = self.__addPadding(byteArray)
     encodedByteArray = self.__DES(byteArray, ENCODE)
     
-    self.__writeByteArray(outputPath, encodedByteArray)
+    self.__writeByteArray(DATA_FOLDER + outputPath, encodedByteArray)
     
   
   def decode(self, inputPath):
     outputPath = 'decoded__' + inputPath[9:]
 
-    byteArray = self.__readByteArray(inputPath)
+    byteArray = self.__readByteArray(DATA_FOLDER + inputPath)
     decodedByteArray = self.__DES(byteArray, DECODE)
     decodedByteArray = self.__removePadding(decodedByteArray)
     
-    self.__writeByteArray(outputPath, decodedByteArray)
+    self.__writeByteArray(DATA_FOLDER + outputPath, decodedByteArray)
 
 
 des = DES()

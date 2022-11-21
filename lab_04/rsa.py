@@ -4,6 +4,8 @@ from random import choice, randrange
 ENCODE = 0
 DECODE = 1
 
+DATA_FOLDER = '../data/'
+
 class RSA:
   def __init__(self, generate = True):
     file = open('settings.json', 'r')
@@ -121,19 +123,19 @@ class RSA:
   def encode(self, inputPath):
     outputPath = 'encoded__' + inputPath
     
-    byteArray = self.__readByteArray(inputPath)
+    byteArray = self.__readByteArray(DATA_FOLDER + inputPath)
     encodedNumArray = self.__RSA(byteArray, ENCODE)
     encodedByteArray = self.__numArrayToByteArray(encodedNumArray, int(self.__keyLength / 8))
-    self.__writeByteArray(outputPath, encodedByteArray)
+    self.__writeByteArray(DATA_FOLDER + outputPath, encodedByteArray)
     
   def decode(self, inputPath):
     outputPath = 'decoded__' + inputPath[9:]
 
-    byteArray = self.__readByteArray(inputPath)
+    byteArray = self.__readByteArray(DATA_FOLDER + inputPath)
     numArray = self.__byteArrayToNumArray(byteArray, int(self.__keyLength / 8))
     decodedByteArray = self.__RSA(numArray, DECODE)
     
-    self.__writeByteArray(outputPath, decodedByteArray)
+    self.__writeByteArray(DATA_FOLDER + outputPath, decodedByteArray)
   
   def privateKey(self):
     return (self.__d, self.__n)
