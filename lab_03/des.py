@@ -157,30 +157,30 @@ class DES:
   def encode(self, inputPath):
     outputPath = 'encoded__' + inputPath
     
-    byteArray = self.__readByteArray(DATA_FOLDER + inputPath)
+    byteArray = self.__readByteArray(inputPath)
     byteArray = self.__addPadding(byteArray)
     encodedByteArray = self.__DES(byteArray, ENCODE)
     
-    self.__writeByteArray(DATA_FOLDER + outputPath, encodedByteArray)
+    self.__writeByteArray(outputPath, encodedByteArray)
     
   
   def decode(self, inputPath):
     outputPath = 'decoded__' + inputPath[9:]
 
-    byteArray = self.__readByteArray(DATA_FOLDER + inputPath)
+    byteArray = self.__readByteArray(inputPath)
     decodedByteArray = self.__DES(byteArray, DECODE)
     decodedByteArray = self.__removePadding(decodedByteArray)
     
-    self.__writeByteArray(DATA_FOLDER + outputPath, decodedByteArray)
+    self.__writeByteArray(outputPath, decodedByteArray)
 
 
 des = DES()
-des.encode('data.txt')
-des.encode('data.png')
-des.encode('data.pdf')
-des.encode('data.zip')
+des.encode(DATA_FOLDER + 'data.txt')
+des.encode(DATA_FOLDER + 'data.png')
+des.encode(DATA_FOLDER + 'data.pdf')
+des.encode(DATA_FOLDER + 'data.zip')
 
-des.decode('encoded__data.txt')
-des.decode('encoded__data.png')
-des.decode('encoded__data.pdf')
-des.decode('encoded__data.zip')
+des.decode(DATA_FOLDER + 'encoded__data.txt')
+des.decode(DATA_FOLDER + 'encoded__data.png')
+des.decode(DATA_FOLDER + 'encoded__data.pdf')
+des.decode(DATA_FOLDER + 'encoded__data.zip')

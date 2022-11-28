@@ -53,16 +53,16 @@ class Enigma:
   def encode(self, inputPath):
     outputPath = 'encoded__' + inputPath
     
-    byteArray = self.__readByteArray(DATA_FOLDER + inputPath)
+    byteArray = self.__readByteArray(inputPath)
     encodedByteArray = self.__Enigma(byteArray)
-    self.__writeByteArray(DATA_FOLDER + outputPath, encodedByteArray)
+    self.__writeByteArray(outputPath, encodedByteArray)
   
   def decode(self, inputPath):
     outputPath = 'decoded__' + inputPath[9:]
     
-    byteArray = self.__readByteArray(DATA_FOLDER + inputPath)
+    byteArray = self.__readByteArray(inputPath)
     decodedByteArray = self.__Enigma(byteArray)
-    self.__writeByteArray(DATA_FOLDER + outputPath, decodedByteArray)
+    self.__writeByteArray(outputPath, decodedByteArray)
   
   def __Enigma(self, data):
     result = []
@@ -91,13 +91,13 @@ class Enigma:
     return result
   
 enigma = Enigma()
-enigma.encode('data.txt')
-enigma.encode('data.png')
-enigma.encode('data.pdf')
-enigma.encode('data.zip')
+enigma.encode(DATA_FOLDER + 'data.txt')
+enigma.encode(DATA_FOLDER + 'data.png')
+enigma.encode(DATA_FOLDER + 'data.pdf')
+enigma.encode(DATA_FOLDER + 'data.zip')
 
 enigma = Enigma()
-enigma.decode('encoded__data.txt')
-enigma.decode('encoded__data.png')
-enigma.decode('encoded__data.pdf')
-enigma.decode('encoded__data.zip')
+enigma.decode(DATA_FOLDER + 'encoded__data.txt')
+enigma.decode(DATA_FOLDER + 'encoded__data.png')
+enigma.decode(DATA_FOLDER + 'encoded__data.pdf')
+enigma.decode(DATA_FOLDER + 'encoded__data.zip')

@@ -123,19 +123,19 @@ class RSA:
   def encode(self, inputPath):
     outputPath = 'encoded__' + inputPath
     
-    byteArray = self.__readByteArray(DATA_FOLDER + inputPath)
+    byteArray = self.__readByteArray(inputPath)
     encodedNumArray = self.__RSA(byteArray, ENCODE)
     encodedByteArray = self.__numArrayToByteArray(encodedNumArray, int(self.__keyLength / 8))
-    self.__writeByteArray(DATA_FOLDER + outputPath, encodedByteArray)
+    self.__writeByteArray(outputPath, encodedByteArray)
     
   def decode(self, inputPath):
     outputPath = 'decoded__' + inputPath[9:]
 
-    byteArray = self.__readByteArray(DATA_FOLDER + inputPath)
+    byteArray = self.__readByteArray(inputPath)
     numArray = self.__byteArrayToNumArray(byteArray, int(self.__keyLength / 8))
     decodedByteArray = self.__RSA(numArray, DECODE)
     
-    self.__writeByteArray(DATA_FOLDER + outputPath, decodedByteArray)
+    self.__writeByteArray(outputPath, decodedByteArray)
   
   def privateKey(self):
     return (self.__d, self.__n)
@@ -145,12 +145,12 @@ class RSA:
 
 
 rsa = RSA()
-rsa.encode('data.txt')
-rsa.encode('data.png')
-rsa.encode('data.pdf')
-rsa.encode('data.zip')
+rsa.encode(DATA_FOLDER + 'data.txt')
+rsa.encode(DATA_FOLDER + 'data.png')
+rsa.encode(DATA_FOLDER + 'data.pdf')
+rsa.encode(DATA_FOLDER + 'data.zip')
 
-rsa.decode('encoded__data.txt')
-rsa.decode('encoded__data.png')
-rsa.decode('encoded__data.pdf')
-rsa.decode('encoded__data.zip')
+rsa.decode(DATA_FOLDER + 'encoded__data.txt')
+rsa.decode(DATA_FOLDER + 'encoded__data.png')
+rsa.decode(DATA_FOLDER + 'encoded__data.pdf')
+rsa.decode(DATA_FOLDER + 'encoded__data.zip')
