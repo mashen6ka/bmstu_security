@@ -1,2 +1,4 @@
 decoded__*
 encoded__*
+*.pem
+*.sig
