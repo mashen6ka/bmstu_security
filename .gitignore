@@ -2,3 +2,5 @@ decoded__*
 encoded__*
 *.pem
 *.sig
+decompressed__*
+compressed__*
