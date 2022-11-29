@@ -1,5 +1,6 @@
 from array import array
 import json
+import os
 
 DATA_FOLDER = '../data/'
 
@@ -51,14 +52,16 @@ class Enigma:
     file.close()
 
   def encode(self, inputPath):
-    outputPath = 'encoded__' + inputPath
+    filePath, fileName = os.path.split(inputPath)
+    outputPath = os.path.join(filePath, 'encoded__' + fileName)
     
     byteArray = self.__readByteArray(inputPath)
     encodedByteArray = self.__Enigma(byteArray)
     self.__writeByteArray(outputPath, encodedByteArray)
   
   def decode(self, inputPath):
-    outputPath = 'decoded__' + inputPath[9:]
+    filePath, fileName = os.path.split(inputPath)
+    outputPath = os.path.join(filePath, 'decoded__' + fileName[9:])
     
     byteArray = self.__readByteArray(inputPath)
     decodedByteArray = self.__Enigma(byteArray)

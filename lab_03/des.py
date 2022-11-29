@@ -1,4 +1,5 @@
 import json
+import os
 
 ENCODE = 0
 DECODE = 1
@@ -155,7 +156,8 @@ class DES:
     file.close()
   
   def encode(self, inputPath):
-    outputPath = 'encoded__' + inputPath
+    filePath, fileName = os.path.split(inputPath)
+    outputPath = os.path.join(filePath, 'encoded__' + fileName)
     
     byteArray = self.__readByteArray(inputPath)
     byteArray = self.__addPadding(byteArray)
@@ -165,7 +167,8 @@ class DES:
     
   
   def decode(self, inputPath):
-    outputPath = 'decoded__' + inputPath[9:]
+    filePath, fileName = os.path.split(inputPath)
+    outputPath = os.path.join(filePath, 'decoded__' + fileName[9:])
 
     byteArray = self.__readByteArray(inputPath)
     decodedByteArray = self.__DES(byteArray, DECODE)

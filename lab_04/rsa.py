@@ -1,5 +1,6 @@
 import json
 from random import choice, randrange
+import os
 
 ENCODE = 0
 DECODE = 1
@@ -20,7 +21,6 @@ class RSA:
       self.__n = int(settings["default"]["n"])
       self.__d = int(settings["default"]["d"])
       self.__e = int(settings["default"]["e"])
-    print(self.__n, self.__d, self.__e)
     file.close()
   
   def __adjustKeyLength(self, keyLength):
@@ -121,7 +121,8 @@ class RSA:
     return byteArray
   
   def encode(self, inputPath):
-    outputPath = 'encoded__' + inputPath
+    filePath, fileName = os.path.split(inputPath)
+    outputPath = os.path.join(filePath, 'encoded__' + fileName)
     
     byteArray = self.__readByteArray(inputPath)
     encodedNumArray = self.__RSA(byteArray, ENCODE)
@@ -129,7 +130,8 @@ class RSA:
     self.__writeByteArray(outputPath, encodedByteArray)
     
   def decode(self, inputPath):
-    outputPath = 'decoded__' + inputPath[9:]
+    filePath, fileName = os.path.split(inputPath)
+    outputPath = os.path.join(filePath, 'decoded__' + fileName[9:])
 
     byteArray = self.__readByteArray(inputPath)
     numArray = self.__byteArrayToNumArray(byteArray, int(self.__keyLength / 8))
