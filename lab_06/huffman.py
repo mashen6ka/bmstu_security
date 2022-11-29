@@ -69,24 +69,6 @@ class Huffman:
     root = heapq.heappop(self.heap)
     currentCode = ""
     self.__makeCodesHelper(root, currentCode)
-
-  def __byteArrayToBitArray(self, array):
-    bitArray = []
-    for byte in array:
-      bitStr = str.zfill(bin(byte)[2:], 8)
-      for bit in bitStr:
-        bitArray.append(int(bit))
-    return bitArray
-    
-  def __bitArrayToByteArray(self, array):
-    byteChunks = self.__nSplit(array, 8)
-    bytesList = []
-    for byte in byteChunks:
-      bitsList = []
-      for bit in byte:
-        bitsList += str(bit)
-      bytesList.append(int(''.join(bitsList), 2))
-    return bytesList
   
   def __readByteArray(self, filePath):
     file = open(filePath, 'rb')
