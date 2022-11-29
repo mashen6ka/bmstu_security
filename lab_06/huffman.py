@@ -21,14 +21,12 @@ class Node:
 class Huffman:
   def __init__(self):
     self.heap = []
-    self.byteToCode = {}
-    self.codeToByte = {}
+    self.codes = {}
     self.frequency = {}
     
   def __reset(self):
     self.heap = []
-    self.byteToCode = {}
-    self.codeToByte = {}
+    self.codes = {}
     self.frequency = {}
     
   def __countFrequency(self, byteArray):
@@ -58,15 +56,14 @@ class Huffman:
   def __makeCodesHelper(self, root, currentCode):
     if (root == None): return
     if (root.byte != None):
-      self.byteToCode[root.byte] = currentCode
-      self.codeToByte[currentCode] = root.byte
+      self.codes[root.byte] = currentCode
       return
 
     self.__makeCodesHelper(root.left, currentCode + "0")
     self.__makeCodesHelper(root.right, currentCode + "1")
   
   def __makeCodes(self):
-    root = heapq.heappop(self.heap)
+    root = self.heap[0]
     currentCode = ""
     self.__makeCodesHelper(root, currentCode)
   
@@ -87,7 +84,6 @@ class Huffman:
       file.write(byte.to_bytes(1, byteorder='big', signed=False))
     file.close()
     
-  # PKCS5 standard
   def __addPadding(self, bitStr):
     paddingLength = 8 - (len(bitStr) % 8)
     bitStr += '0' * paddingLength
@@ -102,20 +98,23 @@ class Huffman:
   def __encodeByteArray(self, byteArray):
     encodedData = ""
     for byte in byteArray:
-      encodedData += self.byteToCode[byte]
+      encodedData += self.codes[byte]
     return encodedData
   
   def __decodeBitStr(self, bitStr):
-    currentCode = ""
     decodedData = []
 
+    root = self.heap[0]
+    currNode = root
     for bit in bitStr:
-      currentCode += bit
-      if (currentCode in self.codeToByte):
-        byte = self.codeToByte[currentCode]
-        decodedData.append(byte)
-        currentCode = ""
-
+      if (bit == "0"):
+        currNode = currNode.left
+      elif (bit == "1"):
+        currNode = currNode.right
+        
+      if (currNode.byte != None):
+        decodedData.append(currNode.byte)
+        currNode = root
     return decodedData
       
   def __bitStrToByteArray(self, bitStr):
@@ -142,7 +141,6 @@ class Huffman:
     self.__makeHeap()
     self.__mergeNodes()
     self.__makeCodes()
-    
     compressedBitStr = self.__encodeByteArray(byteArray)
     compressedBitStr = self.__addPadding(compressedBitStr)
     compressedByteArray = self.__bitStrToByteArray(compressedBitStr)
@@ -154,6 +152,7 @@ class Huffman:
     outputPath = os.path.join(filePath, 'decompressed__' + fileName[12:])
 
     byteArray = self.__readByteArray(inputPath)
+    
     bitStr = self.__byteArrayToBitStr(byteArray)
     bitStr = self.__removePadding(bitStr)
     decompressedByteArray = self.__decodeBitStr(bitStr)
