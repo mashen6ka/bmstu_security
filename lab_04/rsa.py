@@ -34,14 +34,20 @@ class RSA:
   
   def __gcdExtended(self, num1, num2, u1 = 1, v1 = 0,
                                       u2 = 0, v2 = 1):
-    if (num2 == 0): return abs(num1), 1, 0
+    if (num2 == 0): return num1, 1, 0
    
     q = num1 // num2
     r = num1 % num2
     
+    # num1 = num2 * q + r => r = num1 - num2 * q
+    # num1 = u1 * num1 + v1 * num2
+    # num2 = u2 * num1 + v2 * num2
+    # r = u1 * num1 + v1 * num2 - q * (u2 * num1 + v2 * num2)
+    # r = num1 * (u1 - u2 * q) + num2 * (v1 - q * v2)
+    
     u1_, v1_ = u2, v2
     u2_, v2_ = u1 - q * u2, v1 - q * v2 
-    return (abs(num2), u2, v2) if (r == 0) else self.__gcdExtended(num2, r, u1_, v1_, u2_, v2_)
+    return (num2, u2, v2) if (r == 0) else self.__gcdExtended(num2, r, u1_, v1_, u2_, v2_)
   
   def __primeEratosthenes(self, bottom, top):
     nonPrimeList = []
@@ -61,6 +67,12 @@ class RSA:
   
   def __modInverseExtendedEuclid(self, e, phi):
     _, _, v = self.__gcdExtended(phi, e)
+    
+    # u2 * phi + v2 * e = 1
+    # v2 * e - 1 = -u2 * phi
+    # => v2 * e - 1 делится на phi
+    # => v2 * e = 1 (mod phi)
+
     return v % phi
 
   def __generateKeys(self):
